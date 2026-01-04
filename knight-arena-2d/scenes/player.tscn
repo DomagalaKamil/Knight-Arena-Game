@@ -445,7 +445,21 @@ shape = SubResource("CircleShape2D_qhqgy")
 
 [node name="dealAttackTimer" type="Timer" parent="."]
 
+[node name="healthBar" type="ProgressBar" parent="."]
+modulate = Color(0, 0.83828133, 0.38584173, 1)
+offset_left = -4.9999995
+offset_top = 5.0000005
+offset_right = 104.999985
+offset_bottom = 32.0
+scale = Vector2(0.1, 0.1)
+show_percentage = false
+
+[node name="regenTimer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
 [connection signal="body_entered" from="player_hitbox" to="." method="_on_player_hitbox_body_entered"]
 [connection signal="body_exited" from="player_hitbox" to="." method="_on_player_hitbox_body_exited"]
 [connection signal="timeout" from="attackCooldown" to="." method="_on_attack_cooldown_timeout"]
 [connection signal="timeout" from="dealAttackTimer" to="." method="_on_deal_attack_timer_timeout"]
+[connection signal="timeout" from="regenTimer" to="." method="_on_regen_timer_timeout"]
