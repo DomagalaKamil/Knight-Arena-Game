@@ -297,6 +297,8 @@ radius = 7.071068
 
 [node name="Enemy" type="CharacterBody2D"]
 y_sort_enabled = true
+collision_layer = 4
+collision_mask = 1
 script = ExtResource("1_4gyqm")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -306,7 +308,8 @@ frame_progress = 0.77949727
 offset = Vector2(0, -4.5)
 
 [node name="detection_area" type="Area2D" parent="."]
-collision_layer = 2
+collision_layer = 8
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="detection_area"]
 shape = SubResource("CircleShape2D_5tv8x")
@@ -317,6 +320,8 @@ shape = SubResource("CircleShape2D_7k104")
 debug_color = Color(0.9308363, 0.068472974, 0.6260938, 0.41960785)
 
 [node name="enemy_hitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="enemy_hitbox"]
 position = Vector2(0, -2)

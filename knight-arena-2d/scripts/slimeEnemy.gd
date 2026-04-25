@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 @export var speed: float = 35.0
+@export var contact_damage := 10
 
 var player: CharacterBody2D
 var player_chase := false
@@ -10,7 +11,6 @@ var player_in_range = false
 var can_take_damage = true
 
 func _physics_process(delta: float) -> void:
-	
 	deal_with_damage()
 	update_health()
 	
@@ -25,7 +25,7 @@ func _physics_process(delta: float) -> void:
 		elif direction.y < 0:
 			$AnimatedSprite2D.play("back_walk")
 		else:
-			$AnimatedSprite2D.play("side_walk")
+			$AnimatedSprite2D.play("front_walk")
 
 	else:
 		velocity = Vector2.ZERO
@@ -49,22 +49,28 @@ func enemy():
 
 
 func _on_enemy_hitbox_body_entered(body: Node2D) -> void:
-	if body.has_method("player"):
+	if body.is_in_group("player") or body.has_method("take_damage"):
+		player = body
 		player_in_range = true
 
 func _on_enemy_hitbox_body_exited(body: Node2D) -> void:
-	if body.has_method("player"):
+	if body == player:
 		player_in_range = false
 		
 func deal_with_damage():
-	if player_in_range and Global.player_current_attack == true:
-		if can_take_damage == true:
-			$takeDamageCooldown.start()
-			can_take_damage = false
-			health = health - 20
-			print("slime health = ", health)
-			if health <= 0:
-				self.queue_free()
+	if not player_in_range or not is_instance_valid(player):
+		return
+
+	if player.has_method("take_damage"):
+		player.take_damage(contact_damage)
+
+	if Global.player_current_attack and can_take_damage:
+		$takeDamageCooldown.start()
+		can_take_damage = false
+		health -= 20
+		print("slime health = ", health)
+		if health <= 0:
+			queue_free()
 
 func _on_take_damage_cooldown_timeout() -> void:
 	can_take_damage = true
