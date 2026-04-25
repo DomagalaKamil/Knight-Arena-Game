@@ -5,6 +5,7 @@ extends CharacterBody2D
 # ======================
 
 const SPEED := 100
+const PAUSE_MENU_SCENE := preload("res://scenes/pause_menu.tscn")
 
 var current_direction := "front"
 var facing_left := false
@@ -23,6 +24,8 @@ var player_alive := true
 @onready var regen_timer := $regenTimer
 @onready var attack_timer := $attackCooldown
 
+var pause_menu: CanvasLayer
+
 # ======================
 # READY
 # ======================
@@ -34,8 +37,12 @@ func _ready():
 	# Load persistent data
 	health = Global.player_health
 	player_alive = Global.player_alive
+	if Global.has_pending_player_position:
+		global_position = Global.pending_player_position
+		Global.has_pending_player_position = false
 
 	update_healthbar()
+	_setup_pause_menu()
 
 # ======================
 # PROCESS
@@ -89,6 +96,11 @@ func update_animation():
 func _input(event):
 	if event.is_action_pressed("attack") and not Global.player_current_attack:
 		player_attack()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause_menu") and pause_menu:
+		pause_menu.toggle()
+		get_viewport().set_input_as_handled()
 
 func player_attack():
 	Global.player_current_attack = true
@@ -148,6 +160,11 @@ func update_healthbar():
 func save_state():
 	Global.player_health = health
 	Global.player_alive = player_alive
+
+func _setup_pause_menu() -> void:
+	pause_menu = PAUSE_MENU_SCENE.instantiate()
+	pause_menu.player = self
+	add_child.call_deferred(pause_menu)
 
 func _on_player_hitbox_body_entered(_body: Node2D):
 	pass

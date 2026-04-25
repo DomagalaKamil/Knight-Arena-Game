@@ -9,3 +9,7 @@ var player_alive := true
 
 # Scene transition data
 var target_spawn_point := "default"
+
+# Save/load handoff data
+var has_pending_player_position := false
+var pending_player_position := Vector2.ZERO
